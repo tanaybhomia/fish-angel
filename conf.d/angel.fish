@@ -101,8 +101,3 @@ function __complimenter_print_message
         printf "\\n  %s\\n\\n" "$(tput bold)$(tput setaf $color)$message$(tput sgr0)" >&2
     end
 end
-
-function fish_command_not_found
-    __complimenter_print_message
-    __fish_default_command_not_found_handler $argv
-end
