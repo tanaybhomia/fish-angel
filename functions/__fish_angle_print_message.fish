@@ -33,7 +33,8 @@ function __fish_angel_print_message
     end
 
     # Decide if message should be printed
-    if test (random) % 10 -lt $freq
+    set -l rand_val (math (random) % 10)
+    if test $rand_val -lt $freq
         set -l message $messages[(random 1 (count $messages))]
 
         if test "$color" = "random" -o "$color" = "0"
