@@ -33,12 +33,12 @@ function fish_command_not_found
     end
 
     # === Frequency check ===
-    set -l rand_val (math (random) % 10)
+    set -l rand_val (random 0 9)
     if test $rand_val -lt $freq
         set -l message $messages[(random 1 (count $messages))]
 
         if test "$color" = "random" -o "$color" = "0"
-            set color (random 1 6)
+            set color (random 1 255)
         end
 
         printf "\n  %s\n\n" (set_color --bold $color; echo -n $message; set_color normal) >&2
