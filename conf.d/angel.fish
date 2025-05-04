@@ -79,10 +79,15 @@ function __angel_print_message
         set color $COMMENT_COLOR
     end
 
-    # Ensure color is valid
+    # Ensure color is valid and non-empty
     if test -z "$color"
         set -l color_names red green yellow blue magenta cyan white brblack brblue bryellow brmagenta brcyan
         set color $color_names[(random 1 (count $color_names))]
+    end
+
+    # If color is still invalid (in case something goes wrong)
+    if test -z "$color"
+        set color green  # Set a default fallback color
     end
 
     # Show message based on frequency
