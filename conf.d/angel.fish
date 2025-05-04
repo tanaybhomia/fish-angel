@@ -1,11 +1,11 @@
 # Angel Helper – Supportive Fish Plugin
-# Author: Tanay Bhomia
+# Author: Tanay
 # Description: Encouraging messages when commands are not found
 
 function __angel_print_message
-    set color 0
-    set freq 2
-    set messages \
+    set -l color ""
+    set -l freq 1
+    set -l messages \
         "Oops! That didn't work, but you're learning!" \
         "You're doing great—mistakes mean progress!" \
         "Don't worry, even pros make typos!" \
@@ -62,18 +62,33 @@ function __angel_print_message
         "The shell may reject commands, but never your intent." \
         "Trust the process. You are unfolding into something great."
 
-    set RANDOM (random)
-
-    test -n "$COMMENT_FREQ"; and set freq $COMMENT_FREQ
-    test -n "$CMD_NOT_FOUND_MSGS"; and set messages $CMD_NOT_FOUND_MSGS
-    test -n "$CMD_NOT_FOUND_MSGS_APPEND"; and set -a messages $CMD_NOT_FOUND_MSGS_APPEND
-    test -n "$COMMENT_COLOR"; and set color $COMMENT_COLOR
-    if test $color = 0
-        set color (random 33 255)
+    # Override defaults if env vars are set
+    if set -q COMMENT_FREQ; and test -n "$COMMENT_FREQ"
+        set freq $COMMENT_FREQ
     end
 
+    if set -q CMD_NOT_FOUND_MSGS; and test -n "$CMD_NOT_FOUND_MSGS"
+        set messages $CMD_NOT_FOUND_MSGS
+    end
+
+    if set -q CMD_NOT_FOUND_MSGS_APPEND; and test -n "$CMD_NOT_FOUND_MSGS_APPEND"
+        set -a messages $CMD_NOT_FOUND_MSGS_APPEND
+    end
+
+    if set -q COMMENT_COLOR; and test -n "$COMMENT_COLOR"
+        set color $COMMENT_COLOR
+    end
+
+    # Ensure color is valid
+    if test -z "$color"
+        set -l color_names red green yellow blue magenta cyan white brblack brblue bryellow brmagenta brcyan
+        set color $color_names[(random 1 (count $color_names))]
+    end
+
+    # Show message based on frequency
+    set -l RANDOM (random)
     if test (math $RANDOM % 10) -lt $freq
-        set message $messages[(math \( $RANDOM % (count $messages) \) + 1)]
+        set -l message $messages[(math \( $RANDOM % (count $messages) \) + 1)]
         printf "\n  %s\n\n" (set_color --bold (set_color $color); echo $message; set_color normal) >&2
     end
 end
