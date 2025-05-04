@@ -1,10 +1,10 @@
 # Angel Helper – Supportive Fish Plugin
-# Author: You!
+# Author: Tanay Bhomia
 # Description: Encouraging messages when commands are not found
 
 function __angel_print_message
     set color 0
-    set freq 5
+    set freq 2
     set messages \
         "Oops! That didn't work, but you're learning!" \
         "You're doing great—mistakes mean progress!" \
