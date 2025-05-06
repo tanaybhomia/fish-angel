@@ -4,6 +4,8 @@ fish-angel is a supportive companion for the Fish shell that gently encourages a
 
     Because even command-line mistakes deserve kindness.
 
+![image](https://github.com/user-attachments/assets/1317f303-d6e1-4316-bf6b-d9b274c98139)
+
 Example
 ``` bash
  > sl
