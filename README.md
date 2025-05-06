@@ -31,3 +31,8 @@ Move to conf.d folder under your fish install and change these according to your
 set color 0
 set freq 5
 ```
+## Similar Projects
+[Fish Insulter](https://github.com/Alaz-Oz/fish-insulter)
+
+## Contribution
+- If you have any ideas please do contribute
