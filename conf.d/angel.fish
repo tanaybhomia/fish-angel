@@ -3,8 +3,8 @@
 # Description: Encouraging messages when commands are not found
 
 function __angel_print_message
-    set color ""
-    set freq 1
+    set color 0
+    set freq 9
     set messages \
         "Oops! That didn't work, but you're learning!" \
         "You're doing great—mistakes mean progress!" \
