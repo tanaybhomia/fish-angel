@@ -3,9 +3,9 @@
 # Description: Encouraging messages when commands are not found
 
 function __angel_print_message
-    set -l color ""
-    set -l freq 1
-    set -l messages \
+    set color ""
+    set freq 1
+    set messages \
         "Oops! That didn't work, but you're learning!" \
         "You're doing great—mistakes mean progress!" \
         "Don't worry, even pros make typos!" \
@@ -62,41 +62,26 @@ function __angel_print_message
         "The shell may reject commands, but never your intent." \
         "Trust the process. You are unfolding into something great."
 
-    # Override defaults if env vars are set
-    if set -q COMMENT_FREQ; and test -n "$COMMENT_FREQ"
-        set freq $COMMENT_FREQ
-    end
+        # Seed RANDOM with an integer of some length
+        set RANDOM (random)
 
-    if set -q CMD_NOT_FOUND_MSGS; and test -n "$CMD_NOT_FOUND_MSGS"
-        set messages $CMD_NOT_FOUND_MSGS
-    end
+        test -n "$COMMENT_FREQ" && set freq $COMMENT_FREQ
+        test -n "$CMD_NOT_FOUND_MSGS" && set messages $CMD_NOT_FOUND_MSGS
+        test -n "$CMD_NOT_FOUND_MSGS_APPEND" && set -a messages $CMD_NOT_FOUND_MSGS_APPEND
 
-    if set -q CMD_NOT_FOUND_MSGS_APPEND; and test -n "$CMD_NOT_FOUND_MSGS_APPEND"
-        set -a messages $CMD_NOT_FOUND_MSGS_APPEND
-    end
+        test -n "$COMMENT_COLOR" && set color $COMMENT_COLOR
+        if [ $color = 0 ];
+            set color (random 1 255)
+        end
 
-    if set -q COMMENT_COLOR; and test -n "$COMMENT_COLOR"
-        set color $COMMENT_COLOR
-    end
+        # Print a randomly selected message, but only about half the time to annoy the user a
+        # little bit less.
+        if test (math $RANDOM % 10) -lt $freq;
+            set message $messages[(math \( $RANDOM % (count $messages) \) + 1)]
+            printf "\\n  %s\\n\\n" "$(tput bold)$(tput setaf $color)$message$(tput sgr0)" >&2
+        end
 
-    # Ensure color is valid and non-empty
-    if test -z "$color"
-        set -l color_names red green yellow blue magenta cyan white brblack brblue bryellow brmagenta brcyan
-        set color $color_names[(random 1 (count $color_names))]
     end
-
-    # If color is still invalid (in case something goes wrong)
-    if test -z "$color"
-        set color green  # Set a default fallback color
-    end
-
-    # Show message based on frequency
-    set -l RANDOM (random)
-    if test (math $RANDOM % 10) -lt $freq
-        set -l message $messages[(math \( $RANDOM % (count $messages) \) + 1)]
-        printf "\n  %s\n\n" (set_color --bold (set_color $color); echo $message; set_color normal) >&2
-    end
-end
 
 function fish_command_not_found
     __angel_print_message
